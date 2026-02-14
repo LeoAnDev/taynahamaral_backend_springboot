@@ -1,13 +1,13 @@
-package com.taynahamaral.confeitaria;
+package com.taynahamaral.confectionery;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ConfeitariaApiApplication {
+public class ConfectioneryApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ConfeitariaApiApplication.class, args);
+		SpringApplication.run(ConfectioneryApiApplication.class, args);
 	}
 
 }
