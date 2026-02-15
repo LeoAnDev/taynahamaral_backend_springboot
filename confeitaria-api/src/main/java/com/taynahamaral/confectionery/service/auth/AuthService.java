@@ -3,6 +3,7 @@ package com.taynahamaral.confectionery.service.auth;
 import com.taynahamaral.confectionery.controller.auth.dto.LoginRequest;
 import com.taynahamaral.confectionery.controller.auth.dto.LoginResponse;
 import com.taynahamaral.confectionery.domain.user.User;
+import com.taynahamaral.confectionery.domain.user.exception.InvalidCredentialsException;
 import com.taynahamaral.confectionery.repository.user.UserRepository;
 import com.taynahamaral.confectionery.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,23 +28,31 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest request) {
 
-        User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+        // Buscar usuário pelo email
+        User user = userRepository.findByEmailWithRoles(request.email())
+                .orElseThrow(() -> new InvalidCredentialsException());
 
+        // Verificar senha
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
-            throw new RuntimeException("Invalid email or password");
+            throw new InvalidCredentialsException();
         }
 
+        // Gerar token JWT
         String token = jwtUtil.generateToken(
                 user.getEmail(),
-                user.getRoles().stream().map(r -> r.getName()).collect(Collectors.toSet())
+                user.getRoles().stream()
+                        .map(r -> r.getName())
+                        .collect(Collectors.toSet())
         );
 
+        // Retornar dados do usuário + token
         return new LoginResponse(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRoles().stream().map(r -> r.getName()).collect(Collectors.toSet()),
+                user.getRoles().stream()
+                        .map(r -> r.getName())
+                        .collect(Collectors.toSet()),
                 token
         );
     }
