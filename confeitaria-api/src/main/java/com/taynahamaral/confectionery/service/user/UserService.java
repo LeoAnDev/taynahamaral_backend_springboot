@@ -3,6 +3,7 @@ package com.taynahamaral.confectionery.service.user;
 import com.taynahamaral.confectionery.domain.profile.Profile;
 import com.taynahamaral.confectionery.domain.role.Role;
 import com.taynahamaral.confectionery.domain.user.User;
+import com.taynahamaral.confectionery.domain.user.exception.UserAlreadyExistsException;
 import com.taynahamaral.confectionery.repository.user.UserRepository;
 import com.taynahamaral.confectionery.repository.role.RoleRepository;
 
@@ -34,7 +35,7 @@ public class UserService {
             String whatsapp
     ) {
         if (userRepository.existsByEmail(email)) {
-            throw new RuntimeException("E-Mail já cadastrado");
+            throw new UserAlreadyExistsException("E-Mail já cadastrado");
         }
 
         // Buscar role padrão CUSTOMER
