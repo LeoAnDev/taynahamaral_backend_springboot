@@ -35,15 +35,14 @@ public class Role {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    // ==============================
-    // RELACIONAMENTO MANY-TO-MANY
-    // ==============================
     @ManyToMany(mappedBy = "roles")
     private Set<User> users = new HashSet<>();
 
-    // ==============================
-    // MÉTODOS DE CICLO DE VIDA
-    // ==============================
+    public Role(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     @PrePersist
     public void prePersist() {
         this.id = UUID.randomUUID();
@@ -55,6 +54,4 @@ public class Role {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
-    // getters e setters
 }

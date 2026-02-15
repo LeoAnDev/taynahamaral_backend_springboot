@@ -22,8 +22,9 @@ public class Profile {
     @Id
     private UUID id;
 
-    @Column(nullable = false, length = 20)
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Gender gender;
 
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;

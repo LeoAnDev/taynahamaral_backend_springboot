@@ -8,10 +8,11 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -20,7 +21,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/cadastrar")
+    @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterUserRequest request) {
 
         User user = userService.registerUser(
@@ -43,6 +44,8 @@ public class UserController {
                         .collect(Collectors.toSet())
         );
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity
+                .created(URI.create("/api/users/" + user.getId()))
+                .body(response);
     }
 }

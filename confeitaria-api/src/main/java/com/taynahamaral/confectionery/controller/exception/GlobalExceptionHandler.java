@@ -5,7 +5,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -17,15 +18,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleUserAlreadyExists(
             UserAlreadyExistsException ex,
-            HttpServletRequest request
-    ) {
+            HttpServletRequest request) {
 
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.CONFLICT.value(),
-                "User already exists",
+                HttpStatus.CONFLICT.getReasonPhrase(),
                 ex.getMessage(),
                 request.getRequestURI(),
+                ErrorCode.USER_EMAIL_ALREADY_EXISTS,
                 null
         );
 
@@ -48,9 +49,10 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
-                "Validation Error",
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 "Invalid request fields",
                 request.getRequestURI(),
+                ErrorCode.VALIDATION_ERROR,
                 errors
         );
 
@@ -58,17 +60,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneric(
+    public ResponseEntity<ErrorResponse> handleGenericException(
             Exception ex,
-            HttpServletRequest request
-    ) {
+            HttpServletRequest request) {
 
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal Server Error",
-                ex.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                "Unexpected error occurred",
                 request.getRequestURI(),
+                ErrorCode.INTERNAL_SERVER_ERROR,
                 null
         );
 

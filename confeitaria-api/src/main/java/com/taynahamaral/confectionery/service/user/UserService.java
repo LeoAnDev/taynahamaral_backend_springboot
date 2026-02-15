@@ -1,7 +1,9 @@
 package com.taynahamaral.confectionery.service.user;
 
+import com.taynahamaral.confectionery.domain.profile.Gender;
 import com.taynahamaral.confectionery.domain.profile.Profile;
 import com.taynahamaral.confectionery.domain.role.Role;
+import com.taynahamaral.confectionery.domain.role.RoleName;
 import com.taynahamaral.confectionery.domain.user.User;
 import com.taynahamaral.confectionery.domain.user.exception.UserAlreadyExistsException;
 import com.taynahamaral.confectionery.repository.user.UserRepository;
@@ -30,23 +32,24 @@ public class UserService {
             String name,
             String email,
             String password,
-            String gender,
-            String birthDateString, // vem como String
+            Gender gender,
+            String birthDateString,
             String whatsapp
     ) {
+
         if (userRepository.existsByEmail(email)) {
-            throw new UserAlreadyExistsException("E-Mail já cadastrado");
+            throw new UserAlreadyExistsException("Email already registered");
         }
 
         // Buscar role padrão CUSTOMER
-        Role customerRole = roleRepository.findByName("CUSTOMER")
+        Role customerRole = roleRepository.findByName(RoleName.CUSTOMER.name())
                 .orElseThrow(() -> new RuntimeException("Role CUSTOMER not found"));
 
         // Criar usuário
         User user = new User();
         user.setName(name);
         user.setEmail(email);
-        user.setPassword(password); // depois vamos colocar BCrypt
+        user.setPassword(password);
         user.setActive(true);
 
         // Converter String para LocalDate
