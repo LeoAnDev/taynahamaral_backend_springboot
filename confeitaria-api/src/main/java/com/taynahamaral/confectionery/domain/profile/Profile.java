@@ -22,7 +22,6 @@ public class Profile {
     @Id
     private UUID id;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Gender gender;
 
